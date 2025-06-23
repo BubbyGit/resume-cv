@@ -7,13 +7,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1) Клонируем репозиторий вместе со всеми подмодулями
       - uses: actions/checkout@v4
         with:
+          fetch-depth: 0
           submodules: recursive
 
-      # 2) Собираем PDF в контейнере
-      - name: Build PDF in Docker
+      - name: Build PDF
         run: |
           docker run --rm \
             -v ${{ github.workspace }}:/work \
@@ -21,7 +20,6 @@ jobs:
             texlive/texlive:latest \
             latexmk -xelatex -interaction=nonstopmode resume.tex
 
-      # 3) Отправляем артефакт
       - name: Upload artefact
         uses: actions/upload-artifact@v4
         with:
