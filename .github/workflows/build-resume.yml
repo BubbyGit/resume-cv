@@ -1,0 +1,22 @@
+name: build-resume
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build PDF in Docker
+        run: |
+          docker run --rm -v ${{ github.workspace }}:/work \
+            texlive/texlive:latest \
+            latexmk -xelatex -interaction=nonstopmode resume.tex
+
+      - name: Upload artefact
+        uses: actions/upload-artifact@v4
+        with:
+          name: resume-pdf
+          path: resume.pdf
